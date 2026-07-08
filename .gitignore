@@ -1,0 +1,17 @@
+# Local/private constitution state must not be published.
+.agent-constitution/
+constitution.local.yaml
+logs/
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

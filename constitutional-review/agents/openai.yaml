@@ -1,0 +1,4 @@
+interface:
+  display_name: "Constitutional Review"
+  short_description: "Review work against an agent constitution"
+  default_prompt: "Use $constitutional-review to review this project for constitution violations."

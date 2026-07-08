@@ -1,0 +1,4 @@
+interface:
+  display_name: "Constitutional Amendment"
+  short_description: "Draft and record constitution amendments"
+  default_prompt: "Use $constitutional-amendment to propose a constitution amendment."

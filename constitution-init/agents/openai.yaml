@@ -1,0 +1,4 @@
+interface:
+  display_name: "Constitution Init"
+  short_description: "Initialize a local agent constitution store"
+  default_prompt: "Use $constitution-init to create or inspect my local agent constitution store."
