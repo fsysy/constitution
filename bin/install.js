@@ -28,6 +28,7 @@ const skillsDir = explicitSkillsDir
 const force = args.includes("--force");
 const noBackup = args.includes("--no-backup");
 const skillNames = [
+  "constitution",
   "constitution-init",
   "constitutional-amendment",
   "constitutional-review",

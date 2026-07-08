@@ -1,0 +1,6 @@
+interface:
+  display_name: "Constitution"
+  short_description: "Read and interpret the agent constitution"
+  default_prompt: "Use $constitution to read and interpret the current agent constitution."
+policy:
+  allow_implicit_invocation: false

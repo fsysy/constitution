@@ -72,11 +72,12 @@ def main() -> int:
             if not isinstance(index, dict):
                 errors.append('index.json must contain a mapping')
             else:
-                for key in ['judgments', 'amendments']:
-                    if key not in index:
-                        errors.append(f'index.json missing {key}')
-                    elif not isinstance(index[key], dict):
-                        errors.append(f'index.json {key} must be a mapping')
+                if 'judgments' not in index:
+                    errors.append('index.json missing judgments')
+                elif not isinstance(index['judgments'], (dict, list)):
+                    errors.append('index.json judgments must be a mapping or list')
+                if 'amendments' in index and not isinstance(index['amendments'], (dict, list)):
+                    errors.append('index.json amendments must be a mapping or list')
         except json.JSONDecodeError as exc:
             errors.append(f'index.json is invalid JSON: {exc}')
 

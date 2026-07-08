@@ -70,9 +70,10 @@ Use `--force` to replace without backup:
 npx github:fsysy/constitution -- --force
 ```
 
-The installer copies these three skill folders:
+The installer copies these four skill folders:
 
 ```text
+constitution
 constitution-init
 constitutional-amendment
 constitutional-review
@@ -82,6 +83,7 @@ constitutional-review
 
 - `constitution-init`: starts a project or local store that should be governed by
   a constitution from the beginning.
+- `constitution`: reads and interprets the stored constitution without mutating it.
 - `constitutional-amendment`: creates or revises rules through an amendment
   process.
 - `constitutional-review`: reviews a codebase or change against the constitution
@@ -95,12 +97,14 @@ commands.
 Codex commonly uses `$` skill invocation:
 
 ```text
+$constitution summarize my current constitution
 $constitutional-review review the latest commit
 ```
 
 Claude Code and many slash-command agents commonly use `/` invocation:
 
 ```text
+/constitution summarize my current constitution
 /constitutional-review review the latest commit
 ```
 
@@ -108,6 +112,19 @@ The prefix is not part of the constitution system itself. Use the prefix your
 agent expects; the skill names and workflow stay the same.
 
 ## How It Works
+
+### Lookup
+
+Use `constitution` when you only want to read, summarize, or interpret the
+stored constitution. It is read-only and should not prosecute violations or
+modify records.
+
+Examples:
+
+```text
+$constitution explain C007
+/constitution explain C007
+```
 
 ### Amendment
 
@@ -185,6 +202,12 @@ python3 constitution-init/scripts/validate_constitution.py /path/to/.agent-const
 
 Validation requires PyYAML.
 
+Inspect a constitution store without modifying it:
+
+```bash
+python3 constitution/scripts/inspect_store.py
+```
+
 Check whether a review case has already been judged:
 
 ```bash
@@ -194,6 +217,13 @@ python3 constitutional-review/scripts/check_precedent.py \
   --accused-action "missing verification report" \
   --article C007 \
   --evidence-summary "final answer omitted verification"
+```
+
+For an existing legacy fingerprint:
+
+```bash
+python3 constitutional-review/scripts/check_precedent.py \
+  --fingerprint sha256:existing-case-fingerprint
 ```
 
 Record a user verdict and update the precedent index:
@@ -252,6 +282,7 @@ Do not commit live constitution state from `~/.agent-constitution` or any custom
 
 ```text
 constitution-init/          Initialize and validate a private constitution store
+constitution/               Read and interpret a stored constitution
 constitutional-review/      Conduct explicit constitutional reviews
 constitutional-amendment/   Draft and record approved amendments
 bin/install.js              npx installer for agent skill directories

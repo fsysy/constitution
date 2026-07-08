@@ -48,6 +48,16 @@ def load_json(path: Path, fallback: dict) -> dict:
     return json.loads(path.read_text(encoding='utf-8'))
 
 
+def find_judgment(judgments: object, fingerprint: str) -> object | None:
+    if isinstance(judgments, dict):
+        return judgments.get(fingerprint)
+    if isinstance(judgments, list):
+        for item in judgments:
+            if isinstance(item, dict) and item.get('fingerprint') == fingerprint:
+                return item
+    return None
+
+
 def write_json(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + '\n', encoding='utf-8')
@@ -128,8 +138,8 @@ def main() -> int:
     index.setdefault('judgments', {})
     index.setdefault('amendments', {})
 
-    if fingerprint in index['judgments'] and not args.allow_duplicate:
-        existing = index['judgments'][fingerprint]
+    existing = find_judgment(index.get('judgments'), fingerprint)
+    if existing and not args.allow_duplicate:
         print(json.dumps({'error': 'already_judged', 'fingerprint': fingerprint, 'existing': existing}, indent=2, sort_keys=True))
         return 2
 
@@ -153,10 +163,14 @@ def main() -> int:
 
     judgment_path = judgments_dir / f'{case_id}.json'
     write_json(judgment_path, case)
-    index['judgments'][fingerprint] = {
+    index_entry = {
         'case_id': case_id,
+        'fingerprint': fingerprint,
+        'article_ids': sorted(args.articles),
+        'project_path': args.project_path,
         'verdict': args.verdict,
         'path': str(judgment_path.relative_to(home)),
+        'log_path': str(judgment_path.relative_to(home)),
         'created_at': case['created_at'],
     }
 
@@ -164,7 +178,14 @@ def main() -> int:
     if args.verdict == 'guilty':
         recommendation_path = recommendations_dir / f'{case_id}.md'
         recommendation_path.write_text(render_recommendation(case, recommendation_path, args.project_copy_path), encoding='utf-8')
-        index['judgments'][fingerprint]['recommendation_path'] = str(recommendation_path.relative_to(home))
+        index_entry['recommendation_path'] = str(recommendation_path.relative_to(home))
+
+    if isinstance(index.get('judgments'), list):
+        index['judgments'].append(index_entry)
+    elif isinstance(index.get('judgments'), dict):
+        index['judgments'][fingerprint] = index_entry
+    else:
+        index['judgments'] = {fingerprint: index_entry}
 
     write_json(index_path, index)
     print(json.dumps({

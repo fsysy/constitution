@@ -180,11 +180,18 @@ def main() -> int:
         index = load_json(index_path, {'judgments': {}, 'amendments': {}})
         index.setdefault('judgments', {})
         index.setdefault('amendments', {})
-        index['amendments'][amendment_id] = {
+        index_entry = {
+            'amendment_id': amendment_id,
             'path': str(log_path.relative_to(home)),
             'affected_article_ids': changed_ids,
             'created_at': log['created_at'],
         }
+        if isinstance(index.get('amendments'), list):
+            index['amendments'].append(index_entry)
+        elif isinstance(index.get('amendments'), dict):
+            index['amendments'][amendment_id] = index_entry
+        else:
+            index['amendments'] = {amendment_id: index_entry}
         write_json(index_path, index)
         print(json.dumps({'amendment_id': amendment_id, 'log_path': str(log_path), 'affected_article_ids': changed_ids}, indent=2, sort_keys=True))
         return 0

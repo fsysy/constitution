@@ -8,6 +8,7 @@
   },
   "files": [
     "bin",
+    "constitution",
     "constitution-init",
     "constitutional-amendment",
     "constitutional-review",
