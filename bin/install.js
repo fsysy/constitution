@@ -4,10 +4,27 @@ const os = require("os");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
+const args = process.argv.slice(2);
+
+function readOption(name) {
+  const index = args.indexOf(name);
+  if (index === -1) {
+    return null;
+  }
+  return args[index + 1] || null;
+}
+
 const codexHome = process.env.CODEX_HOME
   ? path.resolve(process.env.CODEX_HOME)
   : path.join(os.homedir(), ".codex");
-const skillsDir = path.join(codexHome, "skills");
+const explicitSkillsDir =
+  readOption("--dir") ||
+  readOption("--skills-dir") ||
+  process.env.AGENT_SKILLS_DIR ||
+  process.env.SKILLS_DIR;
+const skillsDir = explicitSkillsDir
+  ? path.resolve(explicitSkillsDir)
+  : path.join(codexHome, "skills");
 const skillNames = [
   "constitution-init",
   "constitutional-amendment",
@@ -41,4 +58,4 @@ for (const skillName of skillNames) {
   console.log(`installed: ${dest}`);
 }
 
-console.log(`Codex skills installed to: ${skillsDir}`);
+console.log(`Agent constitution skills installed to: ${skillsDir}`);

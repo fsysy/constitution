@@ -2,14 +2,19 @@
 
 > My Codex was written by Codex.
 
-This skill package helps Codex follow consistent, complex rules for your own
-codebase. If a rule is simple and must always be obeyed, the most reliable place
-for it is still `AGENTS.md`: always-loaded instructions are more predictable
-than skills that depend on explicit or automatic loading. But project rules are
-rarely simple forever. They change by context, by precedent, and by the shape of
-the codebase, much like law changes in society. Agent Constitution gives those
-rules a legal-style workflow: enact rules, review violations, record judgments,
-and keep the system orderly without loading every rule into every task.
+This skill package helps coding agents follow consistent, complex rules for your
+own codebase. It is not tied to one agent: Codex, Claude Code, AGY, and other
+skill-capable coding agents can use the same governance model as long as they
+can read the installed skill folders.
+
+If a rule is simple and must always be obeyed, the most reliable place for it is
+still an always-loaded instruction file such as `AGENTS.md` or `CLAUDE.md`.
+Always-loaded instructions are more predictable than skills that depend on
+explicit or automatic loading. But project rules are rarely simple forever. They
+change by context, by precedent, and by the shape of the codebase, much like law
+changes in society. Agent Constitution gives those rules a legal-style workflow:
+enact rules, review violations, record judgments, and keep the system orderly
+without loading every rule into every task.
 
 The main advantage is control. You can keep very detailed governance rules out
 of the everyday token budget, then invoke them only when you want to clean,
@@ -22,13 +27,13 @@ reusable skills, starter templates, scripts, and reference instructions.
 
 ## Install
 
-Install the skills into your Codex home:
+Install the skills with `npx`:
 
 ```bash
 npx github:fsysy/constitution
 ```
 
-By default, this copies the skills to:
+By default, this copies the skills to the Codex skill directory:
 
 ```text
 ~/.codex/skills
@@ -40,6 +45,27 @@ Set `CODEX_HOME` to install into a different Codex home:
 CODEX_HOME=/path/to/.codex npx github:fsysy/constitution
 ```
 
+For Claude Code, AGY, or another agent, install into the skill directory that
+agent reads:
+
+```bash
+npx github:fsysy/constitution -- --dir /path/to/agent/skills
+```
+
+You can also use an environment variable:
+
+```bash
+AGENT_SKILLS_DIR=/path/to/agent/skills npx github:fsysy/constitution
+```
+
+The installer copies these three skill folders:
+
+```text
+constitution-init
+constitutional-amendment
+constitutional-review
+```
+
 ## Skills
 
 - `constitution-init`: starts a project or local store that should be governed by
@@ -49,25 +75,46 @@ CODEX_HOME=/path/to/.codex npx github:fsysy/constitution
 - `constitutional-review`: reviews a codebase or change against the constitution
   and reports suspected violations.
 
+## Invocation Syntax
+
+Different agents use different command prefixes for manually invoking skills or
+commands.
+
+Codex commonly uses `$` skill invocation:
+
+```text
+$constitutional-review review the latest commit
+```
+
+Claude Code and many slash-command agents commonly use `/` invocation:
+
+```text
+/constitutional-review review the latest commit
+```
+
+The prefix is not part of the constitution system itself. Use the prefix your
+agent expects; the skill names and workflow stay the same.
+
 ## How It Works
 
 ### Amendment
 
-Use `$constitutional-amendment` when a rule should be created, changed,
+Use `constitutional-amendment` when a rule should be created, changed,
 reordered, clarified, or repealed. The skill treats rulemaking like an amendment
 process: it lists rules by importance, checks for conflicts with existing rules,
 proposes clearer wording, and asks for explicit approval before writing the
 change.
 
-Example:
+Examples:
 
 ```text
 $constitutional-amendment add a rule requiring verification notes in final reports
+/constitutional-amendment add a rule requiring verification notes in final reports
 ```
 
 ### Review
 
-Use `$constitutional-review` when you want to check whether a codebase, commit,
+Use `constitutional-review` when you want to check whether a codebase, commit,
 document, or plan follows the constitution. The skill acts like a prosecutor: it
 reports alleged violations article by article, explains the reason for
 prosecution, and recommends a requested outcome.
@@ -77,22 +124,24 @@ and basis, you decide the verdict: `Pardoned`, `Guilty`, or `Not Guilty`. The
 judgment becomes precedent, and the system records how similar cases should be
 handled later.
 
-Example:
+Examples:
 
 ```text
 $constitutional-review review the latest commit
+/constitutional-review review the latest commit
 ```
 
 ### Init
 
-Use `$constitution-init` when you want a new project or local governance store to
+Use `constitution-init` when you want a new project or local governance store to
 start under constitutional management. It creates the initial constitution files,
 index, and log directories used by the amendment and review workflows.
 
-Example:
+Examples:
 
 ```text
 $constitution-init
+/constitution-init
 ```
 
 ## Direct Scripts
@@ -152,7 +201,7 @@ Do not commit live constitution state from `~/.agent-constitution` or any custom
 constitution-init/          Initialize and validate a private constitution store
 constitutional-review/      Conduct explicit constitutional reviews
 constitutional-amendment/   Draft and record approved amendments
-bin/install.js              npx installer for Codex skill directories
+bin/install.js              npx installer for agent skill directories
 ```
 
 ## Notes
