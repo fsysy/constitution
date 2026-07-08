@@ -1,0 +1,20 @@
+{
+  "name": "@fsysy/codex-constitution",
+  "version": "0.1.0",
+  "description": "Codex skills for maintaining a private agent constitution.",
+  "license": "MIT",
+  "bin": {
+    "codex-constitution": "bin/install.js"
+  },
+  "files": [
+    "bin",
+    "constitution-init",
+    "constitutional-amendment",
+    "constitutional-review",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

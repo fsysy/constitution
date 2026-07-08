@@ -1,47 +1,103 @@
 # Agent Constitution Skills
 
-> My Codex was made with Codex, then gently subjected to constitutional review.
+> My Codex was written by Codex.
 
-This repository contains a small public skill package for maintaining a local,
-user-controlled agent constitution. It gives Codex a structured way to initialize
-governance files, review work against them, and amend them with explicit user
-approval.
+This skill package helps Codex follow consistent, complex rules for your own
+codebase. If a rule is simple and must always be obeyed, the most reliable place
+for it is still `AGENTS.md`: always-loaded instructions are more predictable
+than skills that depend on explicit or automatic loading. But project rules are
+rarely simple forever. They change by context, by precedent, and by the shape of
+the codebase, much like law changes in society. Agent Constitution gives those
+rules a legal-style workflow: enact rules, review violations, record judgments,
+and keep the system orderly without loading every rule into every task.
 
-The live constitution is private user state. This package contains only reusable
-skills, starter templates, scripts, and reference instructions.
+The main advantage is control. You can keep very detailed governance rules out
+of the everyday token budget, then invoke them only when you want to clean,
+audit, or steer a codebase. Your job is to register your working rules in the
+constitution, review how they apply, and decide how they should shape your
+projects. Build your own constitution, and give order to chaotic code.
+
+The live constitution is private user state. This public package contains only
+reusable skills, starter templates, scripts, and reference instructions.
+
+## Install
+
+Install the skills into your Codex home:
+
+```bash
+npx github:fsysy/constitution
+```
+
+By default, this copies the skills to:
+
+```text
+~/.codex/skills
+```
+
+Set `CODEX_HOME` to install into a different Codex home:
+
+```bash
+CODEX_HOME=/path/to/.codex npx github:fsysy/constitution
+```
 
 ## Skills
 
-- `constitution-init`: initializes or validates a private local constitution store.
-- `constitutional-review`: reviews work against the stored constitution, presents prosecutor-style allegations, collects the user's verdict, and writes judgment logs.
-- `constitutional-amendment`: drafts, evaluates, approves, and records constitutional amendments.
+- `constitution-init`: starts a project or local store that should be governed by
+  a constitution from the beginning.
+- `constitutional-amendment`: creates or revises rules through an amendment
+  process.
+- `constitutional-review`: reviews a codebase or change against the constitution
+  and reports suspected violations.
 
-## Typical Flow
+## How It Works
 
-1. Install or expose this skill package to Codex.
-2. Run `$constitution-init` to create a local constitution store.
-3. Use `$constitutional-review` when you want a specific piece of work checked against the constitution.
-4. Use `$constitutional-amendment` when a rule needs to be added, revised, clarified, reordered, or repealed.
+### Amendment
 
-By default, the private constitution store lives at:
+Use `$constitutional-amendment` when a rule should be created, changed,
+reordered, clarified, or repealed. The skill treats rulemaking like an amendment
+process: it lists rules by importance, checks for conflicts with existing rules,
+proposes clearer wording, and asks for explicit approval before writing the
+change.
+
+Example:
 
 ```text
-~/.agent-constitution
+$constitutional-amendment add a rule requiring verification notes in final reports
 ```
 
-Set `AGENT_CONSTITUTION_HOME` to use a different location.
+### Review
 
-## Usage
+Use `$constitutional-review` when you want to check whether a codebase, commit,
+document, or plan follows the constitution. The skill acts like a prosecutor: it
+reports alleged violations article by article, explains the reason for
+prosecution, and recommends a requested outcome.
 
-### Initialize A Constitution Store
+You act as the judge. After reviewing the allegation, reason, requested outcome,
+and basis, you decide the verdict: `Pardoned`, `Guilty`, or `Not Guilty`. The
+judgment becomes precedent, and the system records how similar cases should be
+handled later.
 
-Ask Codex to run the init skill:
+Example:
+
+```text
+$constitutional-review review the latest commit
+```
+
+### Init
+
+Use `$constitution-init` when you want a new project or local governance store to
+start under constitutional management. It creates the initial constitution files,
+index, and log directories used by the amendment and review workflows.
+
+Example:
 
 ```text
 $constitution-init
 ```
 
-Or run the script directly:
+## Direct Scripts
+
+Initialize the default constitution store:
 
 ```bash
 python3 constitution-init/scripts/init_constitution.py
@@ -60,21 +116,7 @@ when you intentionally want to replace them:
 python3 constitution-init/scripts/init_constitution.py --force
 ```
 
-### Validate A Constitution Store
-
-Ask Codex to validate the configured store:
-
-```text
-$constitution-init validate my constitution store
-```
-
-Or run the validator directly:
-
-```bash
-python3 constitution-init/scripts/validate_constitution.py
-```
-
-Validate a custom location:
+Validate a constitution store:
 
 ```bash
 python3 constitution-init/scripts/validate_constitution.py /path/to/.agent-constitution
@@ -82,35 +124,15 @@ python3 constitution-init/scripts/validate_constitution.py /path/to/.agent-const
 
 Validation requires PyYAML.
 
-### Conduct A Constitutional Review
+## Constitution Home
 
-Invoke review explicitly. The skill is intentionally not automatic.
-
-```text
-$constitutional-review review the latest commit
-```
+By default, the private constitution store lives at:
 
 ```text
-$constitutional-review check this PRD against my constitution
+~/.agent-constitution
 ```
 
-The review skill presents suspected violations as allegations. The user gives
-the final verdict: `Pardoned`, `Guilty`, or `Not Guilty`.
-
-### Amend The Constitution
-
-Invoke amendment explicitly when a rule should change.
-
-```text
-$constitutional-amendment add a rule requiring verification notes in final reports
-```
-
-```text
-$constitutional-amendment revise C009 so it allows documented non-git projects
-```
-
-The amendment skill drafts the change, checks conflicts, shows the impact, and
-writes files only after explicit user approval.
+Set `AGENT_CONSTITUTION_HOME` to use a different location.
 
 ## Privacy Boundary
 
@@ -130,6 +152,7 @@ Do not commit live constitution state from `~/.agent-constitution` or any custom
 constitution-init/          Initialize and validate a private constitution store
 constitutional-review/      Conduct explicit constitutional reviews
 constitutional-amendment/   Draft and record approved amendments
+bin/install.js              npx installer for Codex skill directories
 ```
 
 ## Notes
