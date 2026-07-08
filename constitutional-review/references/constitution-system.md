@@ -35,6 +35,21 @@ logs/recommendations/
 
 Use `constitution.yaml` as the canonical source when present. Use `constitution.md` as human-readable output. Keep logs append-only when practical.
 
+## Scripted State Changes
+
+Prefer bundled scripts for durable state changes instead of hand-editing logs or
+indexes:
+
+- use `constitutional-review/scripts/check_precedent.py` for double-jeopardy checks;
+- use `constitutional-review/scripts/record_judgment.py` after the user gives a verdict;
+- use `constitutional-amendment/scripts/validate_amendment.py` before asking for final amendment approval;
+- use `constitutional-amendment/scripts/apply_amendment.py` after explicit approval.
+
+The model still performs legal reasoning, evidence extraction, conflict review,
+and user-facing explanation. Scripts own repeatable storage mechanics:
+fingerprints, judgment IDs, index updates, recommendation archive creation,
+amendment logs, and Markdown rendering.
+
 ## Article Model
 
 Recommended article fields:

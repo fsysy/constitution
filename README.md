@@ -58,6 +58,18 @@ You can also use an environment variable:
 AGENT_SKILLS_DIR=/path/to/agent/skills npx github:fsysy/constitution
 ```
 
+Existing installed skill folders are backed up before replacement:
+
+```text
+constitutional-review.bak-YYYYMMDDTHHMMSSZ
+```
+
+Use `--force` to replace without backup:
+
+```bash
+npx github:fsysy/constitution -- --force
+```
+
 The installer copies these three skill folders:
 
 ```text
@@ -172,6 +184,47 @@ python3 constitution-init/scripts/validate_constitution.py /path/to/.agent-const
 ```
 
 Validation requires PyYAML.
+
+Check whether a review case has already been judged:
+
+```bash
+python3 constitutional-review/scripts/check_precedent.py \
+  --source-type git_commit \
+  --source-ref abc123 \
+  --accused-action "missing verification report" \
+  --article C007 \
+  --evidence-summary "final answer omitted verification"
+```
+
+Record a user verdict and update the precedent index:
+
+```bash
+python3 constitutional-review/scripts/record_judgment.py \
+  --source-type git_commit \
+  --source-ref abc123 \
+  --accused-action "missing verification report" \
+  --article C007 \
+  --evidence-summary "final answer omitted verification" \
+  --prosecution-reason "C007 requires verification reporting" \
+  --verdict guilty \
+  --verdict-reason "verification was omitted"
+```
+
+Validate a proposed amendment article:
+
+```bash
+python3 constitutional-amendment/scripts/validate_amendment.py \
+  --article-file /path/to/proposed-article.yaml
+```
+
+Apply an approved amendment:
+
+```bash
+python3 constitutional-amendment/scripts/apply_amendment.py \
+  --article-file /path/to/proposed-article.yaml \
+  --summary "what changed" \
+  --approval "explicit user approval"
+```
 
 ## Constitution Home
 

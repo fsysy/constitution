@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from pathlib import Path
 
@@ -64,6 +65,20 @@ def main() -> int:
     for rel in ['constitution.md', 'index.json', 'logs/amendments', 'logs/judgments', 'logs/recommendations']:
         if not (home / rel).exists():
             errors.append(f'missing {rel}')
+    index_path = home / 'index.json'
+    if index_path.exists():
+        try:
+            index = json.loads(index_path.read_text(encoding='utf-8'))
+            if not isinstance(index, dict):
+                errors.append('index.json must contain a mapping')
+            else:
+                for key in ['judgments', 'amendments']:
+                    if key not in index:
+                        errors.append(f'index.json missing {key}')
+                    elif not isinstance(index[key], dict):
+                        errors.append(f'index.json {key} must be a mapping')
+        except json.JSONDecodeError as exc:
+            errors.append(f'index.json is invalid JSON: {exc}')
 
     if errors:
         for error in errors:

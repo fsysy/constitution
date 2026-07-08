@@ -25,6 +25,8 @@ const explicitSkillsDir =
 const skillsDir = explicitSkillsDir
   ? path.resolve(explicitSkillsDir)
   : path.join(codexHome, "skills");
+const force = args.includes("--force");
+const noBackup = args.includes("--no-backup");
 const skillNames = [
   "constitution-init",
   "constitutional-amendment",
@@ -45,6 +47,10 @@ function copyDir(src, dest) {
   }
 }
 
+function timestamp() {
+  return new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "Z");
+}
+
 fs.mkdirSync(skillsDir, { recursive: true });
 
 for (const skillName of skillNames) {
@@ -53,7 +59,15 @@ for (const skillName of skillNames) {
   if (!fs.existsSync(src)) {
     throw new Error(`Missing skill directory: ${src}`);
   }
-  fs.rmSync(dest, { recursive: true, force: true });
+  if (fs.existsSync(dest)) {
+    if (force || noBackup) {
+      fs.rmSync(dest, { recursive: true, force: true });
+    } else {
+      const backup = `${dest}.bak-${timestamp()}`;
+      fs.renameSync(dest, backup);
+      console.log(`backed up: ${backup}`);
+    }
+  }
   copyDir(src, dest);
   console.log(`installed: ${dest}`);
 }

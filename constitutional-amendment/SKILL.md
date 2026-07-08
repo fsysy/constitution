@@ -39,9 +39,32 @@ Read `references/constitution-system.md` before editing any constitution files.
    - conflict with higher-priority system/developer/tool constraints.
 7. For each conflict class, explicitly report `none found`, `resolved by wording`, or `requires user decision`.
 8. Propose final article text with `id`, `rank`, `title`, `text`, `scope`, `category`, `rationale`, `examples`, `status`, `created_at`, and `amended_at`.
-9. Present the diff, conflict review, version bump, and impact summary to the user.
+9. Validate the proposed article file with `scripts/validate_amendment.py`.
 10. Apply changes only after the user approves.
-11. Update canonical storage, render/update `constitution.md`, append an amendment log, and report written paths.
+11. Update canonical storage, render/update `constitution.md`, append an amendment log, and update `index.json` with `scripts/apply_amendment.py`.
+12. Report written paths.
+
+## Scripts
+
+Validate a proposed article before asking for approval:
+
+```bash
+python3 <skill-dir>/scripts/validate_amendment.py \
+  --article-file /path/to/proposed-article.yaml
+```
+
+Use `--allow-revise` when the proposal intentionally replaces an existing article with the same ID.
+
+Apply an approved amendment:
+
+```bash
+python3 <skill-dir>/scripts/apply_amendment.py \
+  --article-file /path/to/proposed-article.yaml \
+  --summary "what the amendment changes" \
+  --approval "explicit user approval"
+```
+
+Use `--dry-run` before applying when the impact is unclear.
 
 ## Amendment Logs
 
